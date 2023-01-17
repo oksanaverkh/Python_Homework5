@@ -18,7 +18,7 @@ def check(border):
     return int(quantity)
 
 def game(player_number):
-    candies = 103
+    candies = 2021
     while candies > 0:
         if player_number==1:
             print(f'Player {player_number} takes candies: ', end='')
