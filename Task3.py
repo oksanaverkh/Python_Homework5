@@ -1,91 +1,103 @@
 # Создайте программу для игры в ""Крестики-нолики"".
 
-
 import os
 import random
 os.system('cls')
 
 def check_coordinates():
     x, y = int(input()), int(input())
-    while not 0 <= x <= 2 or not 0 <= y <= 2:
+    while not 1 <= x <= 3 or not 1 <= y <= 3:
         print('Wrong number, try again')
         x, y = int(input()), int(input())
     return int(x), int(y)
 
 def get_empty_table():
-    print('x/y  0   1   2')
-    game_table = []
+    empty_table = [['x/y   1    2    3'],
+                    ['  1 ', ' _ |', ' _ |', ' _ '], 
+                    ['  2 ', ' _ |', ' _ |', ' _ '], 
+                    ['  3 ', ' _ |', ' _ |', ' _ ']]
+    for i in range(0, len(empty_table)):
+        for j in range(0, len(empty_table[i])):
+            print(empty_table[i][j], end=' ')
+        print()
+    return empty_table
 
-    for i in range (3):
-        for j in range(4):
-            if j==0:
-                # print(f'  {i} ', end='')
-                el = f'  {i} '
-                game_table.append(el)
-            elif 0<j<3:
-                # print(' _ |', end='')
-                game_table.append(' _ |')
-            else:
-                # print(' _ ', end='')
-                game_table.append(' _ ')
-        print(*game_table)
-    print()
-    # print(game_table)
-
-def get_game_table(player_number):
-    print('x/y  0   1   2')
+def game():
+    player_number = 1
     x_list, y_list = [], []
-    # game_table = []
-    print(f'Player {player_number} enters coordinates (x, y): ')
-
-    for x in range(3):
-        for y in range(4):
-            x, y = check_coordinates()
-            x_list.append(x)
-            y_list.append(y)
-            coord_list = list(zip(x_list, y_list))
-            move = (x,y,)
-            if y==0:
-                print(f'  {x} ', end='')
-            elif 0<y<3:
-                print(f' {x} |', end='')
-            else:
-                print(' _ ', end='')
-
-        for i in range(len(coord_list)):
-            while coord_list[i] == move:
-                print('Coordinates are already used, enter again')
+    count = 1
+    game_table = get_empty_table()
+    while count<=9:
+        print(f'Player {player_number} enters coordinates (x, y): ', end='')
+        x, y = check_coordinates()        
+        x_list.append(x)
+        y_list.append(y)
+        move = (x,y,)
+        if count>=2:
+            for i in range(len(coord_list)):
+                while coord_list[i] == move:
+                    print('Coordinates are already used, enter again')
+                    x, y = check_coordinates()
+                    move = (x,y,)
+        for i in range(0, len(game_table)):
+            for j in range(0, len(game_table[i])):
+                if i==x and j==y:
+                    if player_number==1:
+                        game_table[i][j] = ' X  '
+                    else:
+                        game_table[i][j] = ' 0  '
+                print(game_table[i][j], end=' ')
             print()
+        coord_list = list(zip(x_list, y_list))
+        count+=1
+        player_number = 3-player_number
 
-# def victory_check()
+    game_table = game_table[1:4]
+    del game_table[0][0]
+    del game_table[1][0]  
+    del game_table[2][0]  
+    return game_table
 
+game_table = [[' _ |', ' _ |', ' _ '], 
+                [' _ |', ' _ |', ' _ '], 
+                [' _ |', ' _ |', ' _ ']]        
+def victory_check(game_table):
+    result = 0
+    for i in range(len(game_table)):
+        if game_table[i][0]==game_table[i][1]==game_table[i][2]:
+            if game_table[i][0]==' X  ':
+                result = 'Player 1 WINS!!!'
+            else:
+                result = 'Player 2 WINS!!!'
+            break    
+    for j in range(len(game_table)):
+        if game_table[0][j]==game_table[1][j]==game_table[2][j]:
+            if game_table[0][j]==' X  ':
+                result = 'Player 1 WINS!!!'
+            else:
+                result = 'Player 2 WINS!!!'
+            break
+    if game_table[0][0]==game_table[1][1]==game_table[2][2]:
+        if game_table[0][0]==' X  ':
+            result = 'Player 1 WINS!!!'
+        else:
+            result = 'Player 2 WINS!!!'
+    elif game_table[2][0]==game_table[1][1]==game_table[0][2]:
+        if game_table[1][1]==' X  ':
+            result = 'Player 1 WINS!!!'
+        else:
+            result = 'Player 2 WINS!!!'
+    else:
+        result = 'Dead heat'
 
-
-# def game(player_number):
-#     candies = 2021
-#     while candies > 0:
-#         print(f'Player {player_number} takes candies: ', end='')
-#         move = check(28)
-#         candies -= move
-#         print(f'Candies remainder = {candies}')
-#         player_number = 3-player_number
-#         while 0 < candies < 28:
-#             print(f'Player {player_number} takes candies: ', end='')
-#             move = check(candies)
-#             candies -= move
-#             player_number = 3-player_number
-#             print(f'Candies remainder = {candies}')
-#     player_number = 3-player_number
-#     print()
-#     print(f'Player {player_number} WINS!!!')
-
+    return result
+        
 def main():
-    queue = random.randint(1, 2)
-    print(f'Player {queue} starts the game')
-    get_empty_table()
-    # get_game_table(queue)
-
-    # game(queue)
+    print('Player 1 starts the game')
+    print()
+    table_game = game()
+    print(victory_check(table_game))
 
 if __name__ == "__main__":
     main()
+
